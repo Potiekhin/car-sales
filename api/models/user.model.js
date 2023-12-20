@@ -16,6 +16,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    avatar: {
+      type: String,
+      default: "https://media.istockphoto.com/vectors/vector-car-icon-with-add-sign-car-icon-and-new-plus-positive-symbol-vector-id1137001522",
+    }
   },
   { timestamps: true }
 );
