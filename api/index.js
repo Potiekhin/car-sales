@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import userRouter from "./routes/user.route.js";
 import authRouter from "./routes/auth.route.js";
 import carRouter from "./routes/car.route.js";
+import cookieParse from "cookie-parser";
 
 mongoose
   .connect(process.env.MDB_URL)
@@ -13,7 +14,9 @@ mongoose
   });
 
 const app = express();
+
 app.use(express.json());
+app.use(cookieParse());
 
 app.listen(process.env.PORT, () =>
   console.log(`Server is running on port ${process.env.PORT}`)

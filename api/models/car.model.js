@@ -62,7 +62,7 @@ const carSchema = new mongoose.Schema(
         type: Array,
         required: true,
     },
-    owner: {
+    uploader: {
         type: String,
         required: true,
     }
