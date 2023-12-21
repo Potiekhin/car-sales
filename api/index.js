@@ -3,6 +3,7 @@ import "dotenv/config";
 import mongoose from "mongoose";
 import userRouter from "./routes/user.route.js";
 import authRouter from "./routes/auth.route.js";
+import carRouter from "./routes/car.route.js";
 
 mongoose
   .connect(process.env.MDB_URL)
@@ -20,6 +21,7 @@ app.listen(process.env.PORT, () =>
 
 app.use("/api/user", userRouter);
 app.use("/api/auth", authRouter);
+app.use("/api/car", carRouter);
 
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
