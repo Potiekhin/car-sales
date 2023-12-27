@@ -1,4 +1,48 @@
+import { useState } from "react";
+
 export default function AddCar() {
+  const [files, setFiles] = useState([]);
+  const [formData, setFormData] = useState({
+    brand: "",
+    model: "",
+    year: "",
+    price: "",
+    description: "",
+    transmission: "",
+    fuel: "",
+    mileage: "",
+    engine: "",
+    gearbox: "",
+    doors: "",
+    seats: "",
+    colour: "",
+    images: [],
+  });
+
+  const handleImageSubmit = async () => {
+    const formData = new FormData();
+    if (files.length > 0) {
+      for (let i = 0; i < files.length; i++) {
+        formData.append("images", files[i]);
+      }
+
+      const response = await fetch("/api/car/upload", {
+        method: "POST",
+        body: formData,
+      });
+      const data = await response.json();
+      setFormData({ ...formData, images: data });
+      setFiles([]);
+    }
+  };
+
+  const handleImagesChange = (e) => {
+    setFiles((files) => [...files, ...e.target.files]);
+    console.log("e.target", e.target.files);
+  };
+
+  console.log("files", files);
+
   return (
     <main className="p-3 max-w-4xl mx-auto">
       <h2 className="text-3xl font-semibold text-center my-7">Add car</h2>
@@ -109,7 +153,7 @@ export default function AddCar() {
           </div>
         </div>
         <div className="flex flex-col flex-1 gap-4">
-          <select className="border p-3 rounded-lg" >
+          <select className="border p-3 rounded-lg">
             <option value="1">Gasoline</option>
             <option value="2">Gas</option>
             <option value="3">Disel</option>
@@ -133,16 +177,49 @@ export default function AddCar() {
           </span>
           <div className="flex gap-4">
             <input
+              onChange={handleImagesChange}
               className="p-3 border border-gray-300 rounded w-full"
               type="file"
               id="images"
               accept="image/*"
               multiple
             />
-            <button className="p-3 text-green-700 border border-green-700 rounded uppercase hover:shadow-lg disabled:opacity-80">
+            <button
+              onClick={handleImageSubmit}
+              type="button"
+              className="p-3 text-green-700 border border-green-700 rounded uppercase hover:shadow-lg disabled:opacity-80"
+            >
               Upload
             </button>
           </div>
+          {files.length > 0 &&
+            files.map((image, index) => (
+              <div
+                className="flex justify-between p-3 border items-center"
+                key={index}
+              >
+                <div>{image.name}</div>
+                <button type="button" className="p-3 text-red-700 rounded-lg uppercase hover:opacity-75">
+                  Delete
+                </button>
+              </div>
+            ))}
+          {formData.images &&
+            formData.images.map((image) => (
+              <div
+                key={image.id}
+                className="flex justify-between p-3 border items-center"
+              >
+                <img
+                  className="w-20 h-20 object-contain rounded-lg"
+                  src={image.url}
+                  alt="car image"
+                />
+                <button type="button" className="p-3 text-red-700 rounded-lg uppercase hover:opacity-75">
+                  Delete
+                </button>
+              </div>
+            ))}
           <button className="p-3 bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 disabled:opacity-80">
             Add car
           </button>
