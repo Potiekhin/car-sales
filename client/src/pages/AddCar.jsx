@@ -2,6 +2,7 @@ import { useState } from "react";
 
 export default function AddCar() {
   const [files, setFiles] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     brand: "",
     model: "",
@@ -22,6 +23,7 @@ export default function AddCar() {
   const handleImageSubmit = async () => {
     const formData = new FormData();
     if (files.length > 0) {
+      setLoading(true);
       for (let i = 0; i < files.length; i++) {
         formData.append("images", files[i]);
       }
@@ -33,15 +35,33 @@ export default function AddCar() {
       const data = await response.json();
       setFormData({ ...formData, images: data });
       setFiles([]);
+      setLoading(false);
     }
   };
 
   const handleImagesChange = (e) => {
-    setFiles((files) => [...files, ...e.target.files]);
-    console.log("e.target", e.target.files);
+    const filesArray = [...files, ...e.target.files];
+    const uniqueArray = filesArray.filter(
+      (obj, index) =>
+        filesArray.findIndex((item) => item.name === obj.name) === index
+    );
+    setFiles(uniqueArray);
   };
 
-  console.log("files", files);
+  const revoveFile = (fileName) => {
+    setFiles((files) => files.filter((file) => file.name !== fileName));
+  };
+
+  const removeImage = async (id) => {
+    const response = await fetch(`/api/car/remove/${id}`, {
+      method: "DELETE",
+    });
+    const data = await response.json();
+    setFormData({
+      ...formData,
+      images: formData.images.filter((image) => image.id !== id),
+    });
+  };
 
   return (
     <main className="p-3 max-w-4xl mx-auto">
@@ -172,25 +192,33 @@ export default function AddCar() {
           <span className="font-semibold">
             Images:
             <span className="font-normal text-gray-600 ml-2">
-              The firs image will be cover (max 6)
+              The firs image will be cover
             </span>
           </span>
           <div className="flex gap-4">
-            <input
-              onChange={handleImagesChange}
-              className="p-3 border border-gray-300 rounded w-full"
-              type="file"
-              id="images"
-              accept="image/*"
-              multiple
-            />
-            <button
-              onClick={handleImageSubmit}
-              type="button"
-              className="p-3 text-green-700 border border-green-700 rounded uppercase hover:shadow-lg disabled:opacity-80"
-            >
-              Upload
-            </button>
+            {loading ? (
+              <div className="p-3 text-green-700 border border-green-700 rounded uppercase">
+                images uploading please wait...
+              </div>
+            ) : (
+              <>
+                <input
+                  onChange={handleImagesChange}
+                  className="p-3 border border-gray-300 rounded w-full"
+                  type="file"
+                  id="images"
+                  accept="image/*"
+                  multiple
+                />
+                <button
+                  onClick={handleImageSubmit}
+                  type="button"
+                  className="p-3 text-green-700 border border-green-700 rounded uppercase hover:shadow-lg disabled:opacity-80"
+                >
+                  Upload
+                </button>
+              </>
+            )}
           </div>
           {files.length > 0 &&
             files.map((image, index) => (
@@ -199,7 +227,11 @@ export default function AddCar() {
                 key={index}
               >
                 <div>{image.name}</div>
-                <button type="button" className="p-3 text-red-700 rounded-lg uppercase hover:opacity-75">
+                <button
+                  onClick={() => revoveFile(image.name)}
+                  type="button"
+                  className="p-3 text-red-700 rounded-lg uppercase hover:opacity-75"
+                >
                   Delete
                 </button>
               </div>
@@ -215,7 +247,11 @@ export default function AddCar() {
                   src={image.url}
                   alt="car image"
                 />
-                <button type="button" className="p-3 text-red-700 rounded-lg uppercase hover:opacity-75">
+                <button
+                  onClick={() => removeImage(image.id)}
+                  type="button"
+                  className="p-3 text-red-700 rounded-lg uppercase hover:opacity-75"
+                >
                   Delete
                 </button>
               </div>

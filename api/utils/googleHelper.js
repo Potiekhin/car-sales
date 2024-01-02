@@ -34,5 +34,5 @@ export const uploadFile = async (fileObject) => {
 export const deleteFile = async (fileId) => {
     const response = await google.drive({ version: "v3", auth }).files.delete(
         { fileId: fileId });
-    console.log(response.status);
+    return response;
 }
