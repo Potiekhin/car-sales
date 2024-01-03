@@ -58,7 +58,7 @@ const carSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    imageUrls: {
+    images: {
         type: Array,
         required: true,
     },

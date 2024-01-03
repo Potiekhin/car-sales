@@ -1,41 +1,56 @@
 import { useState } from "react";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 export default function AddCar() {
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
+  const { currentUser } = useSelector((state) => state.user);
   const [formData, setFormData] = useState({
     brand: "",
     model: "",
-    year: "",
-    price: "",
+    color: "",
+    driveType: "",
+    transmissionType: "",
+    year: 0,
+    price: 0,
     description: "",
     transmission: "",
     fuel: "",
-    mileage: "",
+    mileAge: 0,
     engine: "",
     gearbox: "",
     doors: "",
     seats: "",
     colour: "",
+    engineCapacity: 0,
+    enginePower: 0,
+    batteryCapacity: 0,
+    engineType: "",
+    available: false,
     images: [],
   });
 
+  const navigate = useNavigate();
+
   const handleImageSubmit = async () => {
-    const formData = new FormData();
+    const imagesFormData = new FormData();
     if (files.length > 0) {
       setLoading(true);
       for (let i = 0; i < files.length; i++) {
-        formData.append("images", files[i]);
+        imagesFormData.append("images", files[i]);
       }
 
       const response = await fetch("/api/car/upload", {
         method: "POST",
-        body: formData,
+        body: imagesFormData,
       });
       const data = await response.json();
       setFormData({ ...formData, images: data });
       setFiles([]);
       setLoading(false);
+      setError(false);
     }
   };
 
@@ -55,6 +70,9 @@ export default function AddCar() {
   const removeImage = async (id) => {
     const response = await fetch(`/api/car/remove/${id}`, {
       method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
     });
     const data = await response.json();
     setFormData({
@@ -63,12 +81,54 @@ export default function AddCar() {
     });
   };
 
+  const handleFormData = (e) => {
+    if (e.target.type === "checkbox") {
+      const name = e.target.id;
+      setFormData({
+        ...formData,
+        [name]: e.target.checked,
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [e.target.id]: e.target.value,
+      });
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      if (formData.images.length < 1)
+        return setError("minimum one image required");
+      setLoading(true);
+      setError(false);
+
+      const res = await fetch("/api/car/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ ...formData, uploader: currentUser._id }),
+      });
+      const data = await res.json();
+      setLoading(false);
+      if (data.success === false) {
+        setError(data.message);
+      }
+      navigate(`/car/${data._id}`)
+    } catch (error) {}
+  };
+
+
   return (
     <main className="p-3 max-w-4xl mx-auto">
       <h2 className="text-3xl font-semibold text-center my-7">Add car</h2>
-      <form className="flex flex-col sm:flex-row gap-4">
+      <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4">
         <div className="flex flex-col gap-4 flex-1">
           <input
+            onChange={handleFormData}
+            value={formData.brand}
             type="text"
             placeholder="Brand"
             className="border p-3 rounded-lg focus:outline-none"
@@ -78,6 +138,41 @@ export default function AddCar() {
             maxLength="62"
           />
           <input
+            onChange={handleFormData}
+            value={formData.color}
+            type="text"
+            placeholder="Color"
+            className="border p-3 rounded-lg focus:outline-none"
+            id="color"
+            required
+            minLength="2"
+            maxLength="62"
+          />
+          <input
+            onChange={handleFormData}
+            value={formData.driveType}
+            type="text"
+            placeholder="Drive Type"
+            className="border p-3 rounded-lg focus:outline-none"
+            id="driveType"
+            required
+            minLength="2"
+            maxLength="62"
+          />
+          <input
+            onChange={handleFormData}
+            value={formData.transmissionType}
+            type="text"
+            placeholder="Transmission Type"
+            className="border p-3 rounded-lg focus:outline-none"
+            id="transmissionType"
+            required
+            minLength="2"
+            maxLength="62"
+          />
+          <input
+            onChange={handleFormData}
+            value={formData.model}
             type="text"
             placeholder="Model"
             className="border p-3 rounded-lg focus:outline-none"
@@ -87,6 +182,8 @@ export default function AddCar() {
             maxLength="62"
           />
           <textarea
+            onChange={handleFormData}
+            value={formData.description}
             type="text"
             placeholder="Description"
             className="border p-3 rounded-lg focus:outline-none"
@@ -96,13 +193,22 @@ export default function AddCar() {
           />
           <div className="flex gap-6 flex-wrap">
             <div className="flex gap-2">
-              <input type="checkbox" id="available" className="w-5" />
+              <input
+                onChange={handleFormData}
+                type="checkbox"
+                id="available"
+                value={formData.available}
+                className="w-5"
+                checked={formData.available}
+              />
               <span>available</span>
             </div>
           </div>
           <div className="flex gap-6 flex-wrap">
             <div className="flex items-center gap-2">
               <input
+                onChange={handleFormData}
+                value={formData.mileAge}
                 type="number"
                 className="border p-3 rounded-lg border-gray-300 focus:outline-none"
                 id="mileAge"
@@ -114,6 +220,8 @@ export default function AddCar() {
             </div>
             <div className="flex items-center gap-2">
               <input
+                onChange={handleFormData}
+                value={formData.year}
                 type="number"
                 className="border p-3 rounded-lg border-gray-300 focus:outline-none"
                 id="year"
@@ -125,6 +233,8 @@ export default function AddCar() {
             </div>
             <div className="flex items-center gap-2">
               <input
+                onChange={handleFormData}
+                value={formData.engineCapacity}
                 type="number"
                 className="border p-3 rounded-lg border-gray-300 focus:outline-none"
                 id="engineCapacity"
@@ -135,6 +245,8 @@ export default function AddCar() {
             </div>
             <div className="flex items-center gap-2">
               <input
+                onChange={handleFormData}
+                value={formData.enginePower}
                 type="number"
                 className="border p-3 rounded-lg border-gray-300 focus:outline-none"
                 id="enginePower"
@@ -148,6 +260,8 @@ export default function AddCar() {
             </div>
             <div className="flex items-center gap-2">
               <input
+                onChange={handleFormData}
+                value={formData.batteryCapacity}
                 type="number"
                 className="border p-3 rounded-lg border-gray-300 focus:outline-none"
                 id="batteryCapacity"
@@ -161,6 +275,8 @@ export default function AddCar() {
             </div>
             <div className="flex items-center gap-2">
               <input
+                onChange={handleFormData}
+                value={formData.price}
                 type="number"
                 className="border p-3 rounded-lg border-gray-300 focus:outline-none"
                 id="price"
@@ -173,14 +289,21 @@ export default function AddCar() {
           </div>
         </div>
         <div className="flex flex-col flex-1 gap-4">
-          <select className="border p-3 rounded-lg">
-            <option value="1">Gasoline</option>
-            <option value="2">Gas</option>
-            <option value="3">Disel</option>
-            <option value="4">Electro</option>
-            <option value="5">Gasoline/Gas</option>
+          <select
+            id="fuel"
+            onChange={handleFormData}
+            value={formData.fuel}
+            className="border p-3 rounded-lg"
+          >
+            <option value="Gasoline">Gasoline</option>
+            <option value="Gas">Gas</option>
+            <option value="Disel">Disel</option>
+            <option value="Electro">Electro</option>
+            <option value="Gasoline/Gas">Gasoline/Gas</option>
           </select>
           <input
+            onChange={handleFormData}
+            value={formData.engineType}
             type="text"
             placeholder="Engine Type"
             className="border p-3 rounded-lg focus:outline-none"
@@ -256,9 +379,13 @@ export default function AddCar() {
                 </button>
               </div>
             ))}
-          <button className="p-3 bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 disabled:opacity-80">
-            Add car
+          <button
+            disabled={loading}
+            className="p-3 bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
+          >
+            {loading ? "Loading" : "Add car"}
           </button>
+          {error && <p className="text-red-700 text-sm">{error}</p>}
         </div>
       </form>
     </main>
