@@ -8,6 +8,7 @@ import Footer from "./components/Footer";
 import Profile from "./pages/Profile";
 import PrivateRoute from "./components/PrivateRoute";
 import AddCar from "./pages/AddCar";
+import Car from "./pages/Car";
 
 export default function App() {
   return (
@@ -22,6 +23,7 @@ export default function App() {
           <Route path="/add-car" element={<AddCar />} />
         </Route>
         <Route path="/about" element={<About />} />
+        <Route path="/car/:carId" element={<Car />} />
       </Routes>
       <Footer />
     </BrowserRouter>

@@ -30,7 +30,21 @@ export const removeImage = async (req, res, next) => {
     const response = await deleteFile(id);
     res
       .status(200)
-      .json({ message: "Successfully deleted", status: "success", stausCode: response.status });
+      .json({
+        message: "Successfully deleted",
+        status: "success",
+        stausCode: response.status,
+      });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getCar = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const car = await Car.findOne({ _id: id });
+    res.status(200).json(car);
   } catch (error) {
     next(error);
   }
