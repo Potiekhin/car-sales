@@ -5,6 +5,7 @@ export default function CarItem({ car }) {
     <div className="bg-white shadow-md hover:shadow-lg transition-shadow overflow-hidden m-5 rounded-lg w-full sm:w-[330px]">
       <Link to={`/car/${car._id}`}>
         <img
+          referrerPolicy="no-referrer"
           src={car.images[0].url}
           alt="car"
           className="h-[320px] sm:h-[220px] w-full object-cover hover:scale-105 transition-scale duration-300"
