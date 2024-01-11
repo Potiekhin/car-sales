@@ -58,12 +58,27 @@ export const getAllCars = async (req, res, next) => {
   }
 };
 
+export const updateCar = async (req, res, next) => {
+  try {
+    const car = await Car.findById(req.params.id);
+    if (!car) {
+      return next(errorHandler(404, "Car no found!"));
+    }
+    const updatedCar = await Car.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
+    res.status(200).json(updatedCar);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const deleteCar = async (req, res, next) => {
   try {
     const car = await Car.findById(req.params.id);
 
     if (!car) {
-      return next(errorHandler(401, "Car no found!"));
+      return next(errorHandler(404, "Car no found!"));
     }
 
     for (let i = 0; i < car.images.length; i += 1) {

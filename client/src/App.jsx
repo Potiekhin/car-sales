@@ -9,6 +9,7 @@ import Profile from "./pages/Profile";
 import PrivateRoute from "./components/PrivateRoute";
 import AddCar from "./pages/AddCar";
 import Car from "./pages/Car";
+import UpdateCar from "./pages/UpdateCar";
 
 export default function App() {
   return (
@@ -21,6 +22,7 @@ export default function App() {
         <Route element={<PrivateRoute />}>
           <Route path="/profile" element={<Profile />} />
           <Route path="/add-car" element={<AddCar />} />
+          <Route path="/update-car/:carId" element={<UpdateCar />} />
         </Route>
         <Route path="/about" element={<About />} />
         <Route path="/car/:carId" element={<Car />} />

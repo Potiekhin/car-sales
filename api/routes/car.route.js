@@ -6,6 +6,7 @@ import {
   getCar,
   getAllCars,
   deleteCar,
+  updateCar,
 } from "../controllers/car.controller.js";
 import { verifyToken } from "../utils/verifyUser.js";
 import multer from "multer";
@@ -19,6 +20,7 @@ router.post("/upload", upload.any(), verifyToken, uploadImages);
 router.delete("/remove/:id", verifyToken, removeImage);
 router.get("/get/:id", getCar);
 router.get("/get", getAllCars);
+router.post("/update/:id", verifyToken, updateCar);
 router.delete("/delete/:id", deleteCar);
 
 export default router;

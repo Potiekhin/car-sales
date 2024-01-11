@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
-export default function AddCar() {
+export default function UpdateCar() {
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
@@ -33,6 +33,21 @@ export default function AddCar() {
   });
 
   const navigate = useNavigate();
+  const params = useParams();
+
+  useEffect(() => {
+    const fetchCar = async () => {
+      const res = await fetch(`/api/car/get/${params.carId}`);
+      const data = await res.json();
+
+      if (error.success === false) {
+        console.log(data.message);
+        return;
+      }
+      setFormData(data);
+    };
+    fetchCar();
+  }, []);
 
   const handleImageSubmit = async () => {
     const imagesFormData = new FormData();
@@ -105,7 +120,7 @@ export default function AddCar() {
       setLoading(true);
       setError(false);
 
-      const res = await fetch("/api/car/create", {
+      const res = await fetch(`/api/car/update/${params.carId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -118,12 +133,14 @@ export default function AddCar() {
         setError(data.message);
       }
       navigate(`/car/${data._id}`);
-    } catch (error) {}
+    } catch (error) {
+        console.log(error);
+    }
   };
 
   return (
     <main className="p-3 max-w-4xl mx-auto">
-      <h2 className="text-3xl font-semibold text-center my-7">Add car</h2>
+      <h2 className="text-3xl font-semibold text-center my-7">Update car</h2>
       <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4">
         <div className="flex flex-col gap-4 flex-1">
           <input
@@ -384,7 +401,7 @@ export default function AddCar() {
             disabled={loading}
             className="p-3 bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
           >
-            {loading ? "Loading" : "Add car"}
+            {loading ? "Loading" : "Update car"}
           </button>
           {error && <p className="text-red-700 text-sm">{error}</p>}
         </div>
