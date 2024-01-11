@@ -19,10 +19,10 @@ export default function Car() {
       setWindowWidth(window.innerWidth);
     };
 
-    window.addEventListener('resize', handleWindowResize);
+    window.addEventListener("resize", handleWindowResize);
 
     return () => {
-      window.removeEventListener('resize', handleWindowResize);
+      window.removeEventListener("resize", handleWindowResize);
     };
   });
 
@@ -53,7 +53,7 @@ export default function Car() {
   }, [params.carId]);
 
   return (
-    <main className="max-w-7xl m-auto">
+    <main className="max-w-7xl m-auto mt-5">
       {loading && <p className="text-center my-7 text-2xl">Loading...</p>}
       {error && (
         <p className="text-center my-7 text-2xl">Something went wrong!</p>
@@ -62,13 +62,16 @@ export default function Car() {
         <>
           <Swiper
             style={{
-              '--swiper-navigation-color': '#fff',
-              '--swiper-pagination-color': '#fff',
+              "--swiper-navigation-color": "#fff",
+              "--swiper-pagination-color": "#fff",
             }}
             loop={true}
             // spaceBetween={10}
             navigation={true}
-            thumbs={{ swiper: thumbsSwiper && !thumbsSwiper.destroyed ? thumbsSwiper : null}}
+            thumbs={{
+              swiper:
+                thumbsSwiper && !thumbsSwiper.destroyed ? thumbsSwiper : null,
+            }}
             modules={[FreeMode, Navigation, Thumbs]}
             className="mySwiper2"
           >
@@ -106,6 +109,37 @@ export default function Car() {
               </SwiperSlide>
             ))}
           </Swiper>
+          <div className="max-w-5xl mt-5 m-auto ">
+            <div className="flex justify-between mb-3">
+              <div>some text</div>
+              <div>some value</div>
+            </div>
+            <hr />
+          </div>
+          <div className="max-w-5xl mt-5 m-auto ">
+            <div className="flex justify-between mb-3">
+              <div>some text</div>
+              <div>some value</div>
+            </div>
+            <hr />
+          </div>
+          <div className="max-w-5xl mt-5 m-auto ">
+            <div className="flex justify-between mb-3">
+              <div>some text</div>
+              <div>some value</div>
+            </div>
+            <hr />
+          </div>
+          <div className="max-w-5xl mt-5 m-auto ">
+            <div className="flex justify-between mb-3">
+              <div>some text</div>
+              <div>some value</div>
+            </div>
+            <hr />
+          </div>
+          <div className="max-w-5xl mt-5 m-auto ">
+            <p>{car.description}</p>
+          </div>
         </>
       )}
     </main>

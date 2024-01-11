@@ -28,7 +28,8 @@ export const uploadFile = async (fileObject) => {
     },
     fields: "id",
   });
-  return { id: data.id, url: `https://drive.google.com/uc?export=view&id=${data.id}` };;
+  return { id: data.id, url: `https://lh3.google.com/u/0/d/${data.id}` };
+  // return { id: data.id, url: `https://drive.google.com/uc?export=view&id=${data.id}` }; 
 };
 
 export const deleteFile = async (fileId) => {

@@ -1,5 +1,12 @@
 import express from "express";
-import { createCar, removeImage, uploadImages, getCar } from "../controllers/car.controller.js";
+import {
+  createCar,
+  removeImage,
+  uploadImages,
+  getCar,
+  getAllCars,
+  deleteCar,
+} from "../controllers/car.controller.js";
 import { verifyToken } from "../utils/verifyUser.js";
 import multer from "multer";
 
@@ -11,5 +18,7 @@ router.post("/create", verifyToken, createCar);
 router.post("/upload", upload.any(), verifyToken, uploadImages);
 router.delete("/remove/:id", verifyToken, removeImage);
 router.get("/get/:id", getCar);
+router.get("/get", getAllCars);
+router.delete("/delete/:id", deleteCar);
 
 export default router;

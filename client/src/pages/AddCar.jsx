@@ -116,10 +116,9 @@ export default function AddCar() {
       if (data.success === false) {
         setError(data.message);
       }
-      navigate(`/car/${data._id}`)
+      navigate(`/car/${data._id}`);
     } catch (error) {}
   };
-
 
   return (
     <main className="p-3 max-w-4xl mx-auto">
