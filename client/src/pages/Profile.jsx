@@ -1,12 +1,14 @@
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import { signOutFailure, signOutStart, signOutSuccess } from "../redux/user/userSlice";
 
 export default function Profile() {
   const [cars, setCars] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const { currentUser } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
 
   const handleShowCars = async () => {
     try {
@@ -48,6 +50,21 @@ export default function Profile() {
     }
   };
 
+  const handleSignOut = async () => {
+    try {
+      dispatch(signOutStart());
+      const res = await fetch("/api/auth/signout");
+      const data = await res.json();
+      if (data.success === false) {
+        dispatch(signOutFailure(data.message));
+        return;
+      }
+      dispatch(signOutSuccess());
+    } catch (error) {
+      dispatch(signOutFailure(error));
+    }
+  }
+
   return (
     <div className="p-3 max-w-lg mx-auto">
       <h2 className="text-3xl font-semibold text-center my-7">Profile</h2>
@@ -87,7 +104,7 @@ export default function Profile() {
       </form>
       <div className="flex justify-between mt-5">
         <span className="text-red-700 cursor-pointer">Delete account</span>
-        <span className="text-red-700 cursor-pointer">Sign out</span>
+        <span onClick={handleSignOut} className="text-red-700 cursor-pointer">Sign out</span>
       </div>
       <button onClick={handleShowCars} className="text-green-700 w-full">
         {loading ? "Loading..." : "Show cars"}
