@@ -77,35 +77,29 @@ export default function Car() {
           >
             {car.images.map((image, index) => (
               <SwiperSlide key={index}>
-                <div
-                  className="h-[600px]"
-                  style={{
-                    background: `url(${image.url}) center no-repeat`,
-                    backgroundSize: "cover",
-                  }}
-                ></div>
+                <img
+                  referrerPolicy="no-referrer"
+                  className="block mx-auto w-full max-w-[640px] h-auto sm:max-w-[768px] md:max-w-[1024px] lg:max-w-[1280px]"
+                  src={image.url}
+                  alt="car"
+                />
               </SwiperSlide>
             ))}
           </Swiper>
           <Swiper
             onSwiper={setThumbsSwiper}
             loop={true}
-            // spaceBetween={10}
-            slidesPerView={5}
+            spaceBetween={10}
+            slidesPerView={windowWidth > 1023 ? 5 : windowWidth > 767 ? 4 : 3}
             freeMode={true}
             watchSlidesProgress={true}
             modules={[FreeMode, Navigation, Thumbs]}
-            className="bg-slate-700"
+            className="bg-slate-700 p-2"
+
           >
             {car.images.map((image, index) => (
               <SwiperSlide key={index}>
-                <div
-                  className="h-[150px]"
-                  style={{
-                    background: `url(${image.url}) center no-repeat`,
-                    backgroundSize: "cover",
-                  }}
-                ></div>
+                <img src={image.url} alt="car" />
               </SwiperSlide>
             ))}
           </Swiper>
