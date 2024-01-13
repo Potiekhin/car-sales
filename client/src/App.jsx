@@ -10,6 +10,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import AddCar from "./pages/AddCar";
 import Car from "./pages/Car";
 import UpdateCar from "./pages/UpdateCar";
+import FullScreenImages from "./pages/FullScreenImages";
 
 export default function App() {
   return (
@@ -26,6 +27,7 @@ export default function App() {
         </Route>
         <Route path="/about" element={<About />} />
         <Route path="/car/:carId" element={<Car />} />
+        <Route path="/car/:carId/images" element={<FullScreenImages />} />
       </Routes>
       <Footer />
     </BrowserRouter>

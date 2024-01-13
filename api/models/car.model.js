@@ -62,6 +62,11 @@ const carSchema = new mongoose.Schema(
         type: Array,
         required: true,
     },
+    views: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
     uploader: {
         type: String,
         required: true,

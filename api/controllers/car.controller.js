@@ -91,3 +91,15 @@ export const deleteCar = async (req, res, next) => {
     next(error);
   }
 };
+
+export const addView = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const car = await Car.findById(id);
+    car.views += 1;
+    await car.save();
+    res.status(200).json(car);
+  } catch (error) {
+    next(error);
+  }
+};
