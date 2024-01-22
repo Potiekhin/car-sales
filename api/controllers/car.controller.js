@@ -51,8 +51,52 @@ export const getCar = async (req, res, next) => {
 
 export const getAllCars = async (req, res, next) => {
   try {
-    const allCars = await Car.find();
+    const searchTerm = req.query.searchTerm || "";
+    const brand = req.query.brand || "";
+    let available = req.query.available;
+    const sort = req.query.sort || "createdAt";
+    const order = req.query.order || "desc";
+
+    if (available === undefined || available === "false") {
+      available = { $in: [true, false] };
+    }
+
+    const filter = {
+      $or: [
+        { brand: { $regex: searchTerm, $options: "i" } },
+        { brand:brand },
+        { model: { $regex: searchTerm, $options: "i" } },
+      ],
+      available: available,
+    };
+
+    if (brand) {
+      filter.brand = { $regex: brand, $options: "i" };
+    }
+
+    const sorting = {};
+    if (sort === "price") {
+      sorting.price = order === "asc" ? 1 : -1;
+    } else if (sort === "views") {
+      sorting.views = order === "asc"? 1 : -1;
+    } else if (sort === "createdAt") {
+      sorting.createdAt = order === "asc"? 1 : -1;
+    } else {
+      sorting.top = -1;
+    }
+  
+    const allCars = await Car.find(filter)
+      .sort(sorting);
     res.status(200).json(allCars);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getAllBrands = async (req, res, next) => {
+  try {
+    const brands = await Car.distinct("brand");
+    res.status(200).json(brands);
   } catch (error) {
     next(error);
   }

@@ -67,6 +67,10 @@ const carSchema = new mongoose.Schema(
       required: false,
       default: 0,
     },
+    top: {
+      type: Boolean,
+      default: false,
+    },
     uploader: {
         type: String,
         required: true,

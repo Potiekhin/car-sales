@@ -29,6 +29,7 @@ export default function AddCar() {
     batteryCapacity: 0,
     engineType: "",
     available: false,
+    top: false,
     images: [],
   });
 
@@ -202,6 +203,17 @@ export default function AddCar() {
                 checked={formData.available}
               />
               <span>available</span>
+            </div>
+            <div className="flex gap-2">
+              <input
+                onChange={handleFormData}
+                type="checkbox"
+                id="top"
+                value={formData.top}
+                className="w-5"
+                checked={formData.top}
+              />
+              <span>top</span>
             </div>
           </div>
           <div className="flex gap-6 flex-wrap">
